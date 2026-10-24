@@ -1,0 +1,1041 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>HTML Live Sandbox PRO</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{overscroll-behavior-y:none;}
+body{background:#060911;color:#e9ecf5;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;min-height:100vh;overflow-x:hidden;padding-bottom:70px;overscroll-behavior:none;}
+
+/* Top Navbar */
+.top-navbar{display:flex;align-items:center;justify-content:space-between;background:#0c101d;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.08);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.nav-brand{display:flex;align-items:center;gap:10px;font-weight:bold;font-size:15px;color:#fff}
+.nav-brand i{color:#6366f1;font-size:18px;background:rgba(99,102,241,0.15);padding:7px;border-radius:8px;border:1px solid rgba(99,102,241,0.3)}
+
+    .menu-toggle {
+      width: 42px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 11px;
+      background: #182035;
+      cursor: pointer;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .menu-toggle span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      border-radius: 4px;
+      background: #fff;
+      transition: transform .28s ease, opacity .2s ease;
+    }
+    .menu-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .menu-toggle.open span:nth-child(2) { opacity: 0; }
+    .menu-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    .nav-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 199;
+      background: rgba(0,0,0,.55);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .28s ease, visibility .28s ease;
+    }
+    .nav-overlay.show { opacity: 1; visibility: visible; }
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(310px, 84vw);
+      height: 100dvh;
+      padding: 20px 15px;
+      z-index: 200;
+      background: linear-gradient(160deg,#11182b,#090d19 78%);
+      border-left: 1px solid rgba(255,255,255,.1);
+      box-shadow: -18px 0 45px rgba(0,0,0,.42);
+      transform: translateX(105%);
+      transition: transform .32s cubic-bezier(.2,.8,.2,1);
+      visibility: hidden;
+      overflow-y: auto;
+    }
+    .nav-drawer.open { transform: translateX(0); visibility: visible; }
+    .drawer-brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 8px 9px 22px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.09);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 800;
+    }
+    .drawer-brand i {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .drawer-links { display: flex; flex-direction: column; gap: 9px; }
+    .drawer-link {
+      min-height: 51px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 14px;
+      border-radius: 12px;
+      color: #dce3f4;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(255,255,255,.035);
+      border: 1px solid rgba(255,255,255,.07);
+      transition: background .2s ease, transform .2s ease, border-color .2s ease;
+    }
+    .drawer-link > i:first-child { width: 20px; text-align: center; font-size: 16px; }
+    .drawer-link:active { transform: scale(.98); }
+    .drawer-link.active {
+      color: #fff;
+      background: linear-gradient(110deg,rgba(99,102,241,.32),rgba(79,70,229,.13));
+      border-color: rgba(129,140,248,.55);
+      box-shadow: inset -3px 0 #818cf8, 0 5px 18px rgba(79,70,229,.12);
+      cursor: default;
+      pointer-events: none;
+    }
+    .current-check { margin-right: auto; color: #a5b4fc; font-size: 12px; }
+    .gold-bolt {
+      color: #ffd76a;
+      filter: drop-shadow(0 0 4px rgba(255,204,65,.8));
+      animation: goldShine 1.8s ease-in-out infinite alternate;
+    }
+    @keyframes goldShine {
+      from { filter: drop-shadow(0 0 2px rgba(255,204,65,.35)); }
+      to { filter: drop-shadow(0 0 8px rgba(255,204,65,.95)); }
+    }
+    .ai-link {
+      margin-top: 12px;
+      color: #f2eaff;
+      background: linear-gradient(115deg,#713de0,#a855f7 58%,#5b35b8);
+      border: 1px solid rgba(216,180,254,.5);
+      box-shadow: 0 7px 22px rgba(139,92,246,.25);
+    }
+    .ai-link > i:first-child { color: #fff; }
+    .ai-arrow { margin-right: auto; opacity: .75; font-size: 11px; }
+
+/* Container */
+.container{max-width:800px;margin:15px auto;padding:0 12px}
+
+/* Cards */
+.card{background:#0e1322;border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;margin-bottom:15px;box-shadow:0 8px 20px rgba(0,0,0,0.4)}
+.card-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.card-title h2{font-size:15px;color:#818cf8;display:flex;align-items:center;gap:8px;font-weight:700}
+
+/* Top Toolbar Actions */
+.sandbox-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+
+/* Inputs & Textarea */
+input[type="text"]{width:100%;border:1px solid rgba(255,255,255,0.12);background:#03050a;color:#fff;border-radius:10px;padding:10px 12px;outline:none;font-size:13px;transition:0.2s}
+input[type="text"]:focus,textarea:focus{border-color:rgba(255,255,255,0.12);box-shadow:none}
+
+textarea{width:100%;min-height:220px;border:1px solid rgba(255,255,255,0.12);background:#03050a;color:#fff;border-radius:10px;padding:12px;outline:none;font-size:14px;font-family:Arial,sans-serif;direction:ltr;text-align:left;white-space:pre;overflow:auto;resize:vertical;margin-top:8px;line-height:1.5;caret-color:#fff;spellcheck:false}
+
+/* Buttons Styling */
+button, .btn-upload{border:0;border-radius:10px;padding:10px 14px;color:#fff;font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s ease;text-decoration:none;user-select:none}
+*{-webkit-tap-highlight-color:transparent;}
+button, a, summary, input, textarea, select{-webkit-tap-highlight-color:transparent;}
+button:active, .btn-upload:active{transform:scale(0.97)}
+
+.btn-primary{background:linear-gradient(135deg,#6366f1,#4f46e5);box-shadow:0 3px 12px rgba(99,102,241,0.3)}
+.btn-secondary{background:#182035;border:1px solid rgba(255,255,255,0.1);color:#cbd5e1}
+.btn-secondary:hover{background:#222c48}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);box-shadow:0 3px 12px rgba(16,185,129,0.25)}
+.btn-danger{background:linear-gradient(135deg,#ef4444,#dc2626);box-shadow:0 3px 12px rgba(239,68,68,0.25)}
+
+.btn-launch{background:linear-gradient(135deg,#e11d48,#be123c);box-shadow:0 0 12px rgba(225,29,72,0.4);animation:glowPulse 2s infinite}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 8px rgba(225,29,72,0.3)}50%{box-shadow:0 0 16px rgba(225,29,72,0.7)}}
+
+.action-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+
+/* File/Folder Explorer */
+.explorer-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap}
+.explorer-toolbar .btn-sm{flex:1 1 150px}
+.breadcrumbs{display:flex;align-items:center;gap:5px;overflow-x:auto;white-space:nowrap;padding:9px 10px;margin-bottom:10px;background:#080d18;border:1px solid rgba(255,255,255,.07);border-radius:10px;scrollbar-width:thin;direction:ltr}
+.breadcrumb{border:0;background:transparent;color:#a5b4fc;padding:5px 6px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.breadcrumb.current{color:#f8fafc;cursor:default}
+.breadcrumb-sep{color:#475569;font-size:11px}
+.file-item-card{background:#03050a;border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:10px;margin-bottom:10px;transition:transform .18s ease,border-color .18s ease,background .18s ease}
+.file-item-card:hover{transform:translateY(-1px);border-color:rgba(129,140,248,.3);background:#060a13}
+.file-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;direction:ltr}
+.file-main{display:flex;align-items:center;gap:10px;min-width:0;flex:1;cursor:pointer;direction:ltr}
+.file-meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.file-type{font-size:10px;color:#64748b}
+.file-icon{font-size:20px;width:24px;text-align:center;flex-shrink:0}
+.file-icon.folder{color:#f5c451}.file-icon.html{color:#e34f26}.file-icon.js{color:#f7df1e}
+.file-icon.node{color:#68a063}.file-icon.css{color:#1572b6}.file-icon.python{color:#3776ab}
+.file-icon.java{color:#e76f00}.file-icon.json{color:#f5c542}.file-icon.php{color:#777bb4}
+.file-icon.c{color:#659ad2}.file-icon.cpp{color:#00599c}.file-icon.cs{color:#9b4f96}
+.file-icon.go{color:#00add8}.file-icon.rust{color:#dea584}.file-icon.ruby{color:#cc342d}
+.file-icon.kotlin{color:#7f52ff}.file-icon.swift{color:#f05138}.file-icon.dart{color:#0175c2}
+.file-icon.lua{color:#6b9bd1}.file-icon.sql{color:#e38c00}.file-icon.xml{color:#f97316}
+.file-icon.svg{color:#ffb13b}.file-icon.md{color:#f0f0f0}.file-icon.shell{color:#89e051}
+.file-icon.vue{color:#42b883}.file-icon.svelte{color:#ff3e00}.file-icon.text{color:#94a3b8}
+.file-icon.default{color:#818cf8}
+.file-actions{display:flex;align-items:center;gap:5px;justify-content:flex-end;flex-shrink:0}
+.file-actions .btn-sm-icon{width:34px;height:32px;padding:0}
+.file-actions .btn-run{color:#a7f3d0}
+.action-menu{position:relative}.action-menu summary{list-style:none}
+.action-menu summary::-webkit-details-marker{display:none}
+.action-menu{position:relative}
+.action-menu[open]{position:relative;z-index:1000}
+.action-menu[open] .btn-menu{background:#27314d}
+.action-menu-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:1001;min-width:145px;padding:5px;background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:3px}
+.action-menu-panel button{justify-content:flex-start;background:transparent;padding:8px 9px;border-radius:7px;font-size:12px;width:100%}
+.action-menu-panel button:hover{background:#202a40}
+.file-item-card:has(.action-menu[open]){position:relative;z-index:1000}
+.action-menu-panel .danger{color:#fca5a5}
+.modal-destination-picker{position:relative;margin-bottom:14px}.modal-destination-current{width:100%;min-height:44px;background:#080d18;color:#fff;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;text-align:right}.modal-destination-current:hover{background:#182035;border-color:rgba(129,140,248,.45)}.modal-destination-current span{display:flex;align-items:center;gap:8px}.modal-destination-current i:last-child{color:#94a3b8;font-size:11px}.modal-destination-list{display:none;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;margin-top:7px;padding:6px;background:#050811;border:1px solid rgba(255,255,255,.08);border-radius:10px}.modal-destination-picker.open .modal-destination-list{display:flex}.modal-destination-list .modal-option{margin:0}.modal-option{width:100%;display:flex;align-items:center;gap:8px;text-align:right;color:#dce3f4;background:#0e1322;border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:9px 10px;cursor:pointer}.modal-option:hover{background:#182035}.modal-option.selected{background:rgba(99,102,241,.18);border-color:rgba(129,140,248,.45)}.modal-option.disabled{opacity:.45;cursor:not-allowed}.modal-option small{margin-right:auto;color:#64748b;font-size:10px}.folder-empty{color:#64748b;text-align:center;padding:25px 10px;font-size:13px}
+@media(max-width:520px){.file-row{align-items:flex-start}.file-actions{gap:3px}.file-actions .btn-sm-icon{width:31px;height:30px}.file-name-text{max-width:52vw}.breadcrumbs{margin-left:-2px;margin-right:-2px}.explorer-toolbar .btn-sm{flex-basis:46%}}
+
+/* Modals & Toasts */
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(4px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:15px;opacity:0;pointer-events:none;transition:0.2s ease}
+.modal-overlay.active{opacity:1;pointer-events:all}
+.modal-box{background:#0e1322;border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:20px;width:100%;max-width:360px;text-align:center;transform:scale(0.9);transition:0.2s ease}
+.modal-overlay.active .modal-box{transform:scale(1)}
+.modal-icon{font-size:36px;color:#f59e0b;margin-bottom:10px}
+.modal-title{font-size:16px;font-weight:bold;color:#fff;margin-bottom:6px}
+.modal-desc{font-size:13px;color:#94a3b8;margin-bottom:16px;line-height:1.4}
+.modal-btns{display:flex;justify-content:center;gap:10px}
+.info-modal-box{max-width:620px;text-align:right;max-height:82dvh;overflow:auto}
+.info-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.info-close{width:34px;height:32px;padding:0;flex-shrink:0}
+.site-info-content{display:flex;flex-direction:column;gap:10px}
+.info-section{background:#080d18;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px}
+.info-section h3{font-size:13px;color:#818cf8;margin-bottom:9px;display:flex;align-items:center;gap:7px}
+.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.info-stat{background:#0e1322;border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:9px}
+.info-stat b{display:block;color:#fff;font-size:15px;margin-bottom:2px}
+.info-stat span{font-size:10px;color:#64748b}
+.info-list{display:flex;flex-direction:column;gap:6px}
+.info-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:11px}
+.info-row:last-child{border-bottom:0}
+.info-row strong{color:#f8fafc;text-align:left}
+.info-row span{color:#94a3b8}
+.input-modal-box{max-width:380px}
+.modal-input,.modal-select{width:100%;border:1px solid rgba(255,255,255,.12);background:#03050a;color:#fff;border-radius:10px;padding:10px 12px;outline:none;font-size:13px;margin-bottom:14px}
+.modal-input:focus,.modal-select:focus{border-color:#6366f1;box-shadow:0 0 8px rgba(99,102,241,.3)}
+.modal-select option{background:#0e1322;color:#fff}
+@media(max-width:520px){.info-grid{grid-template-columns:1fr}.info-modal-box{max-height:88dvh}}
+
+#toast-container{position:fixed;bottom:65px;left:15px;right:15px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:#1e293b;color:#fff;padding:10px 14px;border-radius:10px;border-right:4px solid #6366f1;box-shadow:0 8px 20px rgba(0,0,0,0.6);font-size:13px;display:flex;align-items:center;gap:8px;animation:slideUp 0.3s ease forwards}
+.toast.success{border-color:#10b981}.toast.error{border-color:#ef4444}
+@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+/* UI refinements */
+button:focus, button:focus-visible, summary:focus, summary:focus-visible, input:focus, input:focus-visible, textarea:focus, textarea:focus-visible, select:focus, select:focus-visible { outline:none !important; -webkit-focus-ring-color:transparent; box-shadow:none; }
+button::-moz-focus-inner { border:0; }
+.action-menu summary.btn-menu { width:34px; height:34px; min-width:34px; border-radius:50%; padding:0; display:inline-flex; align-items:center; justify-content:center; border:1px solid rgba(255,255,255,.10); background:#182035; color:#cbd5e1; }
+.action-menu summary.btn-menu:hover, .action-menu[open] summary.btn-menu { background:#27314d; color:#fff; }
+.action-menu summary.btn-menu i { font-size:14px; pointer-events:none; }
+.action-menu-panel { min-width:155px; padding:6px; border-radius:12px; }
+.action-menu-panel button { border:0; }
+.modal-options { display:flex; flex-direction:column; gap:6px; max-height:260px; overflow-y:auto; margin-bottom:14px; text-align:right; }
+.modal-option { width:100%; background:#080d18; color:#dbe4f5; border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 12px; font-size:12px; text-align:right; justify-content:flex-start; }
+.modal-option:hover { background:#182035; border-color:rgba(129,140,248,.45); }
+.modal-option.selected { background:#202a40; border-color:#6366f1; color:#fff; }
+textarea { text-decoration:none !important; font-style:normal !important; font-weight:400 !important; letter-spacing:normal !important; text-shadow:none !important; }
+.code-editor-wrap{position:relative;margin-top:8px;background:#03050a;border:1px solid rgba(255,255,255,0.12);border-radius:10px;overflow:hidden;min-height:220px;}
+.code-editor-wrap #codeHighlight{display:none;position:absolute;inset:0;margin:0;padding:12px;width:100%;min-height:220px;box-sizing:border-box;border:0;background:transparent;color:#fff;font-size:14px;font-family:Arial,sans-serif;direction:ltr;text-align:left;white-space:pre;line-height:1.5;overflow:hidden;pointer-events:none;}
+.code-editor-wrap.syntax-enabled #codeHighlight{display:block;}
+.code-editor-wrap #fileCodeInput{position:relative;z-index:2;width:100%;min-height:220px;box-sizing:border-box;margin:0;border:0;background:transparent;color:#fff;caret-color:#fff;font-size:14px;font-family:Arial,sans-serif;line-height:1.5;}
+.code-editor-wrap.syntax-enabled #fileCodeInput{color:transparent;}
+.code-editor-wrap:focus-within{border-color:rgba(255,255,255,0.12);box-shadow:none;}
+.code-comment{color:#7b8498 !important;opacity:.9}
+.code-string{color:#a5d6a7}.code-tag{color:#7dd3fc}.code-keyword{color:#c4b5fd}.code-number{color:#fca5a5}
+.nav-controls{display:flex;align-items:center;gap:8px;direction:ltr}
+.syntax-toggle{width:58px;height:34px;padding:3px;border:1px solid rgba(255,255,255,.13);border-radius:999px;background:#182035;display:inline-flex;align-items:center;justify-content:flex-start;position:relative;transition:background .25s,border-color .25s;flex-shrink:0}
+.syntax-toggle .toggle-knob{width:26px;height:26px;border-radius:50%;background:#e2e8f0;display:grid;place-items:center;color:#334155;font-size:11px;box-shadow:0 2px 7px #0005;transition:transform .28s cubic-bezier(.2,.8,.2,1),background .25s,color .25s}
+.syntax-toggle[aria-checked="true"]{background:linear-gradient(135deg,#4f46e5,#0891b2);border-color:#818cf8}
+.syntax-toggle[aria-checked="true"] .toggle-knob{transform:translateX(24px);background:#fff;color:#4f46e5}
+.syntax-toggle:active .toggle-knob{scale:.92}
+.code-editor-wrap #codeHighlight .code-comment{color:#7b8498}
+.code-editor-wrap #codeHighlight .code-string{color:#a5d6a7}
+.code-editor-wrap #codeHighlight .code-tag{color:#7dd3fc}
+.code-editor-wrap #codeHighlight .code-keyword{color:#c4b5fd}
+.code-editor-wrap #codeHighlight .code-number{color:#fca5a5}
+
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<div class="top-navbar">
+  <div class="nav-brand"><i class="fa-solid fa-flask"></i><span>DevTools</span></div>
+  <div class="nav-controls">
+    <button type="button" class="menu-toggle" id="menuToggle" aria-label="فتح قائمة التنقل" aria-expanded="false"><span></span><span></span><span></span></button>
+    <button type="button" class="syntax-toggle" id="syntaxToggle" role="switch" aria-checked="false" aria-label="تفعيل ألوان البرمجة" title="ألوان البرمجة"><span class="toggle-knob"><i class="fa-solid fa-palette"></i></span></button>
+  </div>
+</div>
+<div class="nav-overlay" id="navOverlay"></div>
+<aside class="nav-drawer" id="navDrawer" aria-hidden="true">
+  <div class="drawer-brand"><i class="fa-solid fa-flask"></i><span>DevTools</span></div>
+  <nav class="drawer-links" aria-label="التنقل بين الصفحات">
+    <a href="index.html" class="drawer-link " ><i class="fa-solid fa-bolt"></i><span>API Tester</span></a>
+    <a href="apitester.html" class="drawer-link " ><i class="fa-solid fa-bolt gold-bolt"></i><span>API Tester V2</span></a>
+    <a href="sandbox.html" class="drawer-link active" aria-current="page"><i class="fa-solid fa-code"></i><span>sandbox</span><i class="fa-solid fa-check current-check"></i></a>
+    <a href="ip_intel.html" class="drawer-link"><i class="fa-solid fa-network-wired"></i><span>IP</span><i class="fa-solid fa-file-code ai-arrow"></i></a>
+    <a href="PHONE.html" class="drawer-link"><i class="fa-solid fa-phone"></i><span>PHONE</span><i class="fa-solid fa-file-code ai-arrow"></i></a>
+    <a href="https://example.com" target="_blank" rel="noopener noreferrer" class="drawer-link ai-link"><i class="fa-solid fa-robot"></i><span>DevAI</span><i class="fa-solid fa-arrow-up-right-from-square ai-arrow"></i></a>
+  </nav>
+</aside>
+
+<div class="container">
+
+  <!-- Editor Section -->
+  <div class="card">
+    <div class="card-title">
+      <h2><i class="fa-solid fa-code"></i> المحرر والتجربة</h2>
+      <button id="resetSandboxBtn" class="btn-secondary btn-sm" title="تصفير البيانات"><i class="fa-solid fa-rotate-right"></i> تصفير</button>
+    </div>
+    
+    <div class="sandbox-actions">
+      <button id="btnNewFile" class="btn-primary"><i class="fa-solid fa-plus"></i> ملف جديد</button>
+      <label class="btn-secondary btn-upload">
+        <i class="fa-solid fa-file-arrow-up"></i> رفع ملف
+        <input type="file" id="fileUploader" accept=".html,.htm,.txt,.js,.mjs,.cjs,.jsx,.ts,.tsx,.css,.scss,.sass,.less,.py,.pyw,.java,.class,.jar,.json,.php,.c,.h,.cpp,.cc,.hpp,.cs,.cmake,.go,.rs,.rb,.kt,.kts,.swift,.dart,.lua,.sql,.xml,.svg,.md,.sh,.bash,.vue,.svelte" style="display:none">
+      </label>
+    </div>
+
+    <div id="editorArea">
+      <input id="fileNameInput" type="text" placeholder="اسم الملف (مثال: test.html)" />
+      <div id="codeEditorWrap" class="code-editor-wrap">
+        <pre id="codeHighlight" aria-hidden="true"></pre>
+        <textarea id="fileCodeInput" placeholder="اكتب كود الـ HTML هنا..." spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+      </div>
+      
+      <div class="action-row">
+        <button id="saveFileBtn" class="btn-success"><i class="fa-solid fa-floppy-disk"></i> حفظ</button>
+        <button id="runCurrentBtn" class="btn-primary btn-launch hidden"><i class="fa-solid fa-play"></i> تشغيل</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Files Section -->
+  <div class="card">
+    <div class="card-title">
+      <h2><i class="fa-solid fa-folder-closed"></i> الملفات المحفوظة</h2>
+    </div>
+    <div class="explorer-toolbar">
+      <button id="btnNewFolder" class="btn-secondary btn-sm"><i class="fa-solid fa-folder-plus"></i> فولدر جديد</button>
+      <button id="btnSiteInfo" class="btn-secondary btn-sm"><i class="fa-solid fa-circle-info"></i> معلومات الموقع</button>
+    </div>
+    <div id="breadcrumbs" class="breadcrumbs" aria-label="مسار الملفات"></div>
+    <div id="filesListContainer"></div>
+  </div>
+
+</div>
+
+<!-- Site Information Modal -->
+<div id="siteInfoModal" class="modal-overlay">
+  <div class="modal-box info-modal-box">
+    <div class="info-modal-head">
+      <div>
+        <div class="modal-title">معلومات الموقع</div>
+        <div class="modal-desc">إحصائيات المحتوى ومعلومات كاملة عن الـSandbox وطريقة عمله ودعمه.</div>
+      </div>
+      <button id="closeSiteInfoBtn" class="btn-secondary btn-sm-icon info-close" title="إغلاق"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div id="siteInfoContent" class="site-info-content"></div>
+  </div>
+</div>
+
+<!-- Custom Input/Selection Modal -->
+<div id="inputModal" class="modal-overlay">
+  <div class="modal-box input-modal-box">
+    <i class="fa-solid fa-pen modal-icon"></i>
+    <div id="inputModalTitle" class="modal-title">إدخال</div>
+    <div id="inputModalDesc" class="modal-desc"></div>
+    <input id="inputModalField" class="modal-input" type="text" autocomplete="off">
+    <div id="inputModalOptions" class="modal-options hidden"></div>
+    <div class="modal-btns">
+      <button id="inputModalConfirm" class="btn-primary">تأكيد</button>
+      <button id="inputModalCancel" class="btn-secondary">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Confirmation Modal -->
+<div id="customModal" class="modal-overlay">
+  <div class="modal-box">
+    <i id="modalIcon" class="fa-solid fa-triangle-exclamation modal-icon"></i>
+    <div id="modalTitle" class="modal-title">تأكيد</div>
+    <div id="modalDesc" class="modal-desc">هل أنت تأكد؟</div>
+    <div class="modal-btns">
+      <button id="modalConfirmBtn" class="btn-danger">تأكيد</button>
+      <button id="modalCancelBtn" class="btn-secondary">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+
+const menuToggle=document.getElementById('menuToggle');
+const navDrawer=document.getElementById('navDrawer');
+const navOverlay=document.getElementById('navOverlay');
+function setDrawer(open){
+ navDrawer.classList.toggle('open',open); navOverlay.classList.toggle('show',open);
+ menuToggle.classList.toggle('open',open); menuToggle.setAttribute('aria-expanded',String(open));
+ navDrawer.setAttribute('aria-hidden',String(!open)); document.body.style.overflow=open?'hidden':'';
+}
+menuToggle.addEventListener('click',()=>setDrawer(!navDrawer.classList.contains('open')));
+navOverlay.addEventListener('click',()=>setDrawer(false));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setDrawer(false)});
+
+const STORAGE_KEY='dev_sandbox_files';
+let rawFiles=[];
+try{rawFiles=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');}catch(e){rawFiles=[];}
+let activeFileId=null;
+let currentFolderId=null;
+let localFiles=[];
+let folders=[];
+let zipLoadingPromise=null;
+
+function uid(prefix){return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function normalizeName(name){return String(name||'').trim().replace(/[\\/:*?"<>|]/g,'_').replace(/\s+/g,' ').trim();}
+function extOf(name){const m=String(name||'').toLowerCase().match(/\.([a-z0-9_-]+)$/);return m?m[1]:'';}
+
+function migrateData(){
+ const old=Array.isArray(rawFiles)?rawFiles:[];
+ if(old.some(x=>x&&x.kind==='folder')){
+   folders=old.filter(x=>x.kind==='folder').map(x=>({...x,kind:'folder',parentId:x.parentId??null}));
+   localFiles=old.filter(x=>x&&x.kind!=='folder').map(x=>({...x,kind:'file',parentId:x.parentId??null}));
+   return;
+ }
+ localFiles=old.filter(Boolean).map(x=>({...x,kind:'file',parentId:x.parentId??null}));
+ folders=[];
+}
+migrateData();
+
+const fileNameInput=document.getElementById('fileNameInput');
+const fileCodeInput=document.getElementById('fileCodeInput');
+const runCurrentBtn=document.getElementById('runCurrentBtn');
+const filesListContainer=document.getElementById('filesListContainer');
+const breadcrumbs=document.getElementById('breadcrumbs');
+const codeHighlight=document.getElementById('codeHighlight');
+
+function escapeHighlightText(value){return String(value??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+let syntaxColorsEnabled=false;
+const syntaxToggle=document.getElementById('syntaxToggle');
+function highlightCode(code){
+ const text=String(code??'');
+ if(!syntaxColorsEnabled)return escapeHighlightText(text)||' ';
+ const tokenPattern=/<!--[\s\S]*?-->|\/\*[\s\S]*?\*\/|\/\/[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`|<\/?[A-Za-z][^>]*>|\b(?:const|let|var|function|return|if|else|new|class|extends|async|await|try|catch|throw|for|while|do|switch|case|break|continue|true|false|null|undefined|import|export|from|default|this|typeof|instanceof|in|of|delete|void|yield|static|public|private|protected)\b|\b\d+(?:\.\d+)?\b/g;
+ let out='',last=0,match;
+ while((match=tokenPattern.exec(text))!==null){
+  out+=escapeHighlightText(text.slice(last,match.index));
+  const token=match[0];let cls='';
+  if(token.startsWith('<!--')||token.startsWith('/*')||token.startsWith('//'))cls='code-comment';
+  else if(token.startsWith('"')||token.startsWith("'")||token.startsWith('`'))cls='code-string';
+  else if(token.startsWith('<'))cls='code-tag';
+  else if(/^\d/.test(token))cls='code-number';
+  else cls='code-keyword';
+  out+=`<span class="${cls}">${escapeHighlightText(token)}</span>`;
+  last=tokenPattern.lastIndex;
+ }
+ out+=escapeHighlightText(text.slice(last));
+ return out||' ';
+}
+function updateCodeHighlight(){
+ if(!codeHighlight)return;
+ codeHighlight.innerHTML=highlightCode(fileCodeInput.value);
+ codeHighlight.scrollTop=fileCodeInput.scrollTop;
+ codeHighlight.scrollLeft=fileCodeInput.scrollLeft;
+}
+syntaxToggle.addEventListener('click',()=>{
+ syntaxColorsEnabled=!syntaxColorsEnabled;
+ document.getElementById('codeEditorWrap').classList.toggle('syntax-enabled',syntaxColorsEnabled);
+ syntaxToggle.setAttribute('aria-checked',String(syntaxColorsEnabled));
+ syntaxToggle.setAttribute('aria-label',syntaxColorsEnabled?'إيقاف ألوان البرمجة':'تفعيل ألوان البرمجة');
+ updateCodeHighlight();
+});
+fileCodeInput.addEventListener('input',updateCodeHighlight);
+fileCodeInput.addEventListener('scroll',updateCodeHighlight);
+
+const defaultHTMLCode=`<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>صفحة تجربة</title>
+<style>
+body { background: #0f172a; color: #fff; font-family: sans-serif; text-align: center; padding: 40px 15px; }
+h1 { color: #38bdf8; font-size: 22px; } p { color: #94a3b8; font-size: 14px; margin: 10px 0 20px; }
+button { background: #e11d48; color: #fff; border:0; padding:10px 20px; border-radius:8px; font-weight:bold; font-size:14px; cursor:pointer; }
+</style></head>
+<body><h1>مرحباً بك في التجربة! 🚀</h1><p>تعديل واختبار فوري بأسلوب سريع ومريح.</p>
+<button onclick="alert('شغال تمام! 🔥')">اضغط للتجربة</button></body></html>`;
+
+function showToast(msg,type='info'){
+ const container=document.getElementById('toast-container'),toast=document.createElement('div');
+ toast.className=`toast ${type}`;
+ const icon=type==='success'?'fa-circle-check':type==='error'?'fa-circle-xmark':'fa-info-circle';
+ toast.innerHTML=`<i class="fa-solid ${icon}"></i><span>${esc(msg)}</span>`;
+ container.appendChild(toast);
+ setTimeout(()=>{toast.style.opacity='0';setTimeout(()=>toast.remove(),300)},2500);
+}
+let onModalConfirm=null;
+function showCustomModal(title,desc,confirmText='تأكيد',onConfirm){
+ document.getElementById('modalTitle').innerText=title;
+ document.getElementById('modalDesc').innerText=desc;
+ document.getElementById('modalConfirmBtn').innerText=confirmText;
+ document.getElementById('customModal').classList.add('active'); onModalConfirm=onConfirm;
+}
+document.getElementById('modalCancelBtn').onclick=()=>{document.getElementById('customModal').classList.remove('active');onModalConfirm=null};
+document.getElementById('modalConfirmBtn').onclick=()=>{const cb=onModalConfirm;document.getElementById('customModal').classList.remove('active');onModalConfirm=null;if(cb)cb()};
+
+let onInputModalConfirm=null;
+let inputModalSelectedValue='';
+let destinationPickerCleanup=null;
+function closeInputModal(){
+ if(destinationPickerCleanup){destinationPickerCleanup();destinationPickerCleanup=null}
+ document.getElementById('inputModal').classList.remove('active');
+ document.getElementById('inputModalField').value='';
+ document.getElementById('inputModalOptions').classList.add('hidden');
+ document.getElementById('inputModalField').classList.remove('hidden');
+ document.getElementById('inputModalOptions').innerHTML='';
+ inputModalSelectedValue='';
+ onInputModalConfirm=null;
+}
+function showInputModal(title,desc,initialValue='',onConfirm,options=null){
+ const field=document.getElementById('inputModalField'),optionsBox=document.getElementById('inputModalOptions');
+ document.getElementById('inputModalTitle').innerText=title;
+ document.getElementById('inputModalDesc').innerText=desc;
+ onInputModalConfirm=onConfirm;
+ if(destinationPickerCleanup){destinationPickerCleanup();destinationPickerCleanup=null}
+ if(options){
+  field.classList.add('hidden');optionsBox.classList.remove('hidden');
+  inputModalSelectedValue=String(initialValue??'');
+  const selected=options.find(o=>String(o.id??'')===inputModalSelectedValue)||options.find(o=>!o.disabled)||options[0];
+  inputModalSelectedValue=String(selected?.id??'');
+  optionsBox.innerHTML=`<div class="modal-destination-picker">
+    <button type="button" class="modal-destination-current" id="modalDestinationCurrent" aria-expanded="false"><span><i class="fa-solid ${selected?.id===null?'fa-house':'fa-folder'}"></i> ${esc(selected?.name||'Home / الجذر')}</span><i class="fa-solid fa-chevron-down"></i></button>
+    <div class="modal-destination-list" role="listbox">${options.map(o=>`<button type="button" class="modal-option${String(o.id??'')===inputModalSelectedValue?' selected':''}${o.disabled?' disabled':''}" data-value="${esc(o.id??'')}" ${o.disabled?'disabled':''}><i class="fa-solid ${o.id===null?'fa-house':'fa-folder'}"></i><span>${esc(o.name)}</span>${o.disabled?'<small>غير متاح</small>':''}</button>`).join('')}</div>
+  </div>`;
+  const picker=optionsBox.querySelector('.modal-destination-picker');
+  const currentBtn=optionsBox.querySelector('#modalDestinationCurrent');
+  const closePicker=()=>{picker.classList.remove('open');currentBtn.setAttribute('aria-expanded','false')};
+  picker.classList.add('open');
+  currentBtn.setAttribute('aria-expanded','true');
+  currentBtn.onclick=e=>{e.stopPropagation();const open=!picker.classList.contains('open');picker.classList.toggle('open',open);currentBtn.setAttribute('aria-expanded',String(open))};
+  optionsBox.querySelectorAll('.modal-option:not(.disabled)').forEach(btn=>btn.onclick=()=>{
+   inputModalSelectedValue=btn.dataset.value;
+   optionsBox.querySelectorAll('.modal-option').forEach(x=>x.classList.remove('selected'));
+   btn.classList.add('selected');
+   const opt=options.find(o=>String(o.id??'')===inputModalSelectedValue);
+   currentBtn.querySelector('span').innerHTML=`<i class="fa-solid ${opt?.id===null?'fa-house':'fa-folder'}"></i> ${esc(opt?.name||'Home / الجذر')}`;
+   closePicker();
+  });
+  const outside=e=>{if(!picker.contains(e.target))closePicker()};
+  document.addEventListener('click',outside);
+  destinationPickerCleanup=()=>document.removeEventListener('click',outside);
+ }else{
+  optionsBox.classList.add('hidden');field.classList.remove('hidden');field.value=initialValue||'';
+ }
+ document.getElementById('inputModal').classList.add('active');
+ setTimeout(()=>options?document.getElementById('modalDestinationCurrent')?.focus():field.focus(),30);
+}
+document.getElementById('inputModalCancel').onclick=closeInputModal;
+document.getElementById('inputModalConfirm').onclick=()=>{
+ const field=document.getElementById('inputModalField');
+ const value=document.getElementById('inputModalOptions').classList.contains('hidden')?field.value:inputModalSelectedValue;
+ const cb=onInputModalConfirm;closeInputModal();if(cb)cb(value);
+};
+
+
+function isDescendant(folderId,possibleAncestorId){
+ let cur=folders.find(f=>f.id===folderId),guard=0;
+ while(cur&&guard++<1000){if(cur.parentId===possibleAncestorId)return true;cur=folders.find(f=>f.id===cur.parentId)}
+ return false;
+}
+function folderPath(folderId){
+ const path=[],seen=new Set();let guard=0;
+ let cur=folderId;
+ while(cur&&guard++<1000&&!seen.has(cur)){seen.add(cur);const f=folders.find(x=>x.id===cur);if(!f)break;path.unshift(f);cur=f.parentId??null}
+ return path;
+}
+function childrenOf(parentId){return localFiles.filter(f=>(f.parentId??null)===(parentId??null));}
+function foldersOf(parentId){return folders.filter(f=>(f.parentId??null)===(parentId??null));}
+
+const ICONS={
+ html:['fa-html5','html','HTML'],htm:['fa-html5','html','HTML'],
+ css:['fa-css3-alt','css','CSS'],scss:['fa-sass','css','SCSS'],sass:['fa-sass','css','SASS'],less:['fa-less','css','LESS'],
+ js:['fa-square-js','js','JavaScript'],mjs:['fa-square-js','js','JavaScript'],cjs:['fa-square-js','js','JavaScript'],jsx:['fa-react','js','JSX'],
+ ts:['fa-code','js','TypeScript'],tsx:['fa-react','js','TSX'],
+ py:['fa-python','python','Python'],pyw:['fa-python','python','Python'],
+ java:['fa-java','java','Java'],class:['fa-java','java','Java'],jar:['fa-java','java','Java'],
+ json:['fa-file-code','json','JSON'],php:['fa-php','php','PHP'],
+ c:['fa-c','c','C'],h:['fa-c','c','C / Header'],cpp:['fa-code','cpp','C++'],cc:['fa-code','cpp','C++'],hpp:['fa-code','cpp','C++'],
+ cs:['fa-code','cs','C#'],cmake:['fa-gears','default','CMake'],go:['fa-code','go','Go'],rs:['fa-code','rust','Rust'],rb:['fa-gem','ruby','Ruby'],
+ kt:['fa-code','kotlin','Kotlin'],kts:['fa-code','kotlin','Kotlin'],swift:['fa-code','swift','Swift'],dart:['fa-code','dart','Dart'],lua:['fa-code','lua','Lua'],
+ sql:['fa-database','sql','SQL'],xml:['fa-code','xml','XML'],svg:['fa-bezier-curve','svg','SVG'],md:['fa-markdown','md','Markdown'],
+ sh:['fa-terminal','shell','Shell'],bash:['fa-terminal','shell','Bash'],vue:['fa-vuejs','vue','Vue'],svelte:['fa-code','svelte','Svelte'],txt:['fa-file-lines','text','Text']
+};
+function iconFor(file){
+ const e=extOf(file.name);
+ if(file.name.toLowerCase()==='package.json')return ['fa-node-js','node','Node.js'];
+ if((e==='js'||e==='mjs'||e==='cjs') && /\b(require\s*\(|module\.exports|process\.env|__dirname|__filename)\b/.test(file.code||''))return ['fa-node-js','node','Node.js'];
+ return ICONS[e]||['fa-file','default','File'];
+}
+function iconHtml(file){
+ const [icon,cls,label]=iconFor(file);
+ const brand=['fa-html5','fa-css3-alt','fa-square-js','fa-react','fa-python','fa-java','fa-php','fa-c','fa-markdown','fa-node-js','fa-vuejs'].includes(icon);
+ return `<i class="${brand?'fa-brands':'fa-solid'} ${icon} file-icon ${cls}" title="${esc(label)}" aria-label="${esc(label)}"></i>`;
+}
+
+function persist(){
+ const all=[...folders.map(f=>({...f,kind:'folder'})),...localFiles.map(f=>({...f,kind:'file'}))];
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(all)); renderFilesList();
+}
+
+function renderBreadcrumbs(){
+ breadcrumbs.innerHTML='';
+ const home=document.createElement('button');home.className='breadcrumb';home.innerHTML='<i class="fa-solid fa-house"></i> Home';
+ home.onclick=()=>{currentFolderId=null;renderFilesList()};breadcrumbs.appendChild(home);
+ folderPath(currentFolderId).forEach((f,i,path)=>{
+   const sep=document.createElement('span');sep.className='breadcrumb-sep';sep.textContent='/';breadcrumbs.appendChild(sep);
+   const b=document.createElement('button');b.className='breadcrumb'+(i===path.length-1?' current':'');b.textContent=f.name;
+   if(i<path.length-1)b.onclick=()=>{currentFolderId=f.id;renderFilesList()};
+   breadcrumbs.appendChild(b);
+ });
+ breadcrumbs.scrollLeft=breadcrumbs.scrollWidth;
+}
+
+function closeMenus(except=null){document.querySelectorAll('.action-menu[open]').forEach(x=>{if(x!==except)x.removeAttribute('open')})}
+document.addEventListener('click',e=>{
+ const menu=e.target.closest('.action-menu');
+ const summary=e.target.closest('.action-menu summary');
+ if(summary&&menu){closeMenus(menu);return}
+ if(!menu)closeMenus();
+});
+
+function renderFilesList(){
+ renderBreadcrumbs();filesListContainer.innerHTML='';
+ const fs=foldersOf(currentFolderId).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+ const fl=childrenOf(currentFolderId).sort((a,b)=>a.name.localeCompare(b.name,'ar'));
+ if(!fs.length&&!fl.length){
+   filesListContainer.innerHTML=`<div class="folder-empty"><i class="fa-regular fa-folder-open" style="font-size:28px;margin-bottom:8px"></i><br>لا توجد ملفات أو فولدرات هنا</div>`;return;
+ }
+ fs.forEach(folder=>{
+   const item=document.createElement('div');item.className='file-item-card';
+   item.innerHTML=`<div class="file-row">
+     <div class="file-main" role="button" tabindex="0" title="دخول ${esc(folder.name)}">
+       <i class="fa-solid fa-folder file-icon folder"></i><div class="file-meta"><span class="file-name-text">${esc(folder.name)}</span><span class="file-type">Folder · ${childrenOf(folder.id).length+foldersOf(folder.id).length} عنصر</span></div>
+     </div>
+     <div class="file-actions">
+       <details class="action-menu"><summary class="btn-secondary btn-sm-icon btn-menu" title="الإجراءات"><i class="fa-solid fa-ellipsis-vertical"></i></summary>
+       <div class="action-menu-panel">
+        <button onclick="renameFolder('${folder.id}');closeMenus()"><i class="fa-solid fa-pen"></i> إعادة تسمية</button>
+        <button onclick="moveFolder('${folder.id}');closeMenus()"><i class="fa-solid fa-arrows-up-down-left-right"></i> نقل</button>
+        <button onclick="extractFolderContents('${folder.id}');closeMenus()"><i class="fa-solid fa-box-open"></i> استخراج</button>
+        <button onclick="downloadFolderZip('${folder.id}');closeMenus()"><i class="fa-solid fa-file-zipper"></i> تنزيل ZIP</button>
+        <button class="danger" onclick="confirmDeleteFolder('${folder.id}');closeMenus()"><i class="fa-solid fa-trash"></i> حذف</button>
+       </div></details>
+     </div></div>`;
+   const main=item.querySelector('.file-main');
+   const openThisFolder=()=>enterFolder(folder.id);
+   main.onclick=e=>{e.stopPropagation();openThisFolder()};
+   main.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openThisFolder()}};
+   item.setAttribute('role','group');
+   item.addEventListener('click',e=>{
+    if(e.target.closest('.file-actions,.action-menu,.action-menu-panel,button,summary'))return;
+    openThisFolder();
+   });
+   filesListContainer.appendChild(item);
+ });
+ fl.forEach(file=>{
+   const item=document.createElement('div');item.className='file-item-card';
+   item.innerHTML=`<div class="file-row">
+    <div class="file-main" role="button" tabindex="0" title="فتح ${esc(file.name)}">${iconHtml(file)}<div class="file-meta"><span class="file-name-text">${esc(file.name)}</span><span class="file-type">${esc(iconFor(file)[2])}</span></div></div>
+    <div class="file-actions">
+      <button class="btn-secondary btn-sm-icon btn-run" title="تشغيل/معاينة" onclick="launchProjectFile('${file.id}')"><i class="fa-solid fa-play"></i></button>
+      <details class="action-menu"><summary class="btn-secondary btn-sm-icon btn-menu" title="الإجراءات"><i class="fa-solid fa-ellipsis-vertical"></i></summary>
+      <div class="action-menu-panel">
+       <button onclick="editFile('${file.id}');closeMenus()"><i class="fa-solid fa-pen"></i> تعديل</button>
+       <button onclick="moveFile('${file.id}');closeMenus()"><i class="fa-solid fa-arrows-up-down-left-right"></i> نقل</button>
+       <button onclick="downloadSingleFile('${file.id}');closeMenus()"><i class="fa-solid fa-download"></i> تحميل</button>
+       <button class="danger" onclick="confirmDeleteFile('${file.id}');closeMenus()"><i class="fa-solid fa-trash"></i> حذف</button>
+      </div></details>
+    </div></div>`;
+   const main=item.querySelector('.file-main');main.onclick=()=>editFile(file.id);
+   main.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();editFile(file.id)}};
+   filesListContainer.appendChild(item);
+ });
+}
+
+function enterFolder(id){if(folders.some(f=>f.id===id)){currentFolderId=id;renderFilesList()}}
+
+document.getElementById('btnNewFolder').onclick=()=>{
+ showInputModal('فولدر جديد','اكتب اسم الفولدر الجديد.','',value=>{
+  const name=normalizeName(value);if(!name)return;
+  if(folders.some(f=>(f.parentId??null)===(currentFolderId??null)&&f.name.toLowerCase()===name.toLowerCase()))return showToast('يوجد فولدر بنفس الاسم هنا','error');
+  folders.push({id:uid('folder'),kind:'folder',name,parentId:currentFolderId??null});persist();renderFilesList();showToast('تم إنشاء الفولدر','success');
+ });
+};
+
+function uniqueSiblingName(name,parentId,excludeId){
+ const lower=name.toLowerCase();return !folders.some(f=>f.id!==excludeId&&(f.parentId??null)===(parentId??null)&&f.name.toLowerCase()===lower)&&!localFiles.some(f=>f.id!==excludeId&&(f.parentId??null)===(parentId??null)&&f.name.toLowerCase()===lower);
+}
+function renameFolder(id){
+ const f=folders.find(x=>x.id===id);if(!f)return;
+ showInputModal('إعادة تسمية الفولدر','اكتب الاسم الجديد للفولدر.',f.name,value=>{
+  const name=normalizeName(value);if(!name||name===f.name)return;
+  if(!uniqueSiblingName(name,f.parentId,id))return showToast('يوجد عنصر بنفس الاسم في نفس المكان','error');
+  f.name=name;persist();showToast('تمت إعادة تسمية الفولدر','success');
+ });
+}
+function extractFolderContents(id){
+ const folder=folders.find(x=>x.id===id);if(!folder)return;
+ const targetParent=currentFolderId??null;
+ if(targetParent===id||isDescendant(targetParent,id))return showToast('لا يمكن استخراج محتويات الفولدر إلى داخله أو أحد فروعه','error');
+ const directFolders=folders.filter(f=>(f.parentId??null)===id);
+ const directFiles=localFiles.filter(f=>(f.parentId??null)===id);
+ if(!directFolders.length&&!directFiles.length)return showToast('الفولدر فاضي','info');
+ const items=[...directFolders,...directFiles],occupied=new Set();
+ for(const item of items){
+  const name=item.name.toLowerCase();
+  if(occupied.has(name)||!uniqueSiblingName(item.name,targetParent,item.id))return showToast(`لا يمكن استخراج المحتويات: يوجد عنصر باسم "${item.name}" في المكان الحالي`,'error');
+  occupied.add(name);
+ }
+ directFolders.forEach(f=>{f.parentId=targetParent});
+ directFiles.forEach(f=>{f.parentId=targetParent});
+ persist();renderFilesList();showToast(`تم استخراج ${items.length} عنصر إلى المكان الحالي`,'success');
+}
+function destinationOptions(currentParent,excludeFolderId){
+ const current=currentParent??null;
+ const candidates=[{id:null,name:'Home / الجذر',disabled:current===null}];
+ const blocked=new Set();
+ if(excludeFolderId){
+  blocked.add(excludeFolderId);
+  folders.forEach(f=>{if(isDescendant(f.id,excludeFolderId))blocked.add(f.id)});
+ }
+ folders.filter(f=>!blocked.has(f.id)).sort((a,b)=>{
+  const da=folderPath(a.id).length,db=folderPath(b.id).length;
+  return da-db||a.name.localeCompare(b.name,'ar');
+ }).forEach(f=>{
+  const isCurrent=f.id===current;
+  const path=folderPath(f.id).map(x=>x.name).join(' / ');
+  candidates.push({id:f.id,name:path||f.name,disabled:isCurrent});
+ });
+ return candidates;
+}
+function destinationPrompt(currentParent,excludeFolderId,onDone){
+ const options=destinationOptions(currentParent,excludeFolderId);
+ if(!options.some(o=>!o.disabled))return showToast('لا يوجد مكان آخر متاح للنقل','info');
+ showInputModal('نقل العنصر','اختار المكان الذي تريد نقل العنصر إليه. اضغط على خانة المكان لعرض Home وكل الفولدرات المتاحة.',currentParent??'',value=>{
+  const dest=value===''?null:value;
+  const valid=options.some(o=>!o.disabled&&String(o.id??'')===String(dest??''));
+  if(!valid)return showToast('المكان المختار غير متاح للنقل','error');
+  onDone(dest);
+ },options);
+}
+
+function moveFile(id){
+ const f=localFiles.find(x=>x.id===id);if(!f)return;
+ destinationPrompt(f.parentId,null,dest=>{
+  dest=dest??null;
+  if(dest===(f.parentId??null))return showToast('الملف موجود بالفعل في هذا المكان','info');
+  if(!uniqueSiblingName(f.name,dest,id))return showToast('يوجد ملف أو فولدر بنفس الاسم في الهدف','error');
+  f.parentId=dest;persist();showToast(dest===null?'تم إخراج الملف إلى Root':'تم نقل الملف','success');
+ });
+}
+function moveFolder(id){
+ const f=folders.find(x=>x.id===id);if(!f)return;
+ destinationPrompt(f.parentId,id,dest=>{
+  dest=dest??null;
+  if(dest===id||isDescendant(dest,id))return showToast('لا يمكن نقل الفولدر داخل نفسه أو أحد فروعه','error');
+  if(dest===(f.parentId??null))return showToast('الفولدر موجود بالفعل في هذا المكان','info');
+  if(!uniqueSiblingName(f.name,dest,id))return showToast('يوجد عنصر بنفس الاسم في الهدف','error');
+  f.parentId=dest;
+  if(currentFolderId===id||isDescendant(currentFolderId,id))currentFolderId=dest;
+  persist();showToast(dest===null?'تم إخراج الفولدر إلى Root':'تم نقل الفولدر','success');
+});
+}
+
+document.getElementById('btnNewFile').onclick=(e)=>{
+ e.preventDefault();
+ activeFileId=null;
+ fileNameInput.value='project_'+Math.floor(Math.random()*1000)+'.html';
+ fileCodeInput.value=defaultHTMLCode;
+ updateCodeHighlight();
+ runCurrentBtn.classList.remove('hidden');
+ fileCodeInput.focus();
+ showToast('جاهز لإنشاء ملف جديد');
+};
+document.getElementById('saveFileBtn').onclick=(e)=>{
+ e.preventDefault();
+ const name=normalizeName(fileNameInput.value),code=fileCodeInput.value;
+ if(!name)return showToast('اكتب اسم الملف أولاً!','error');
+ if(activeFileId){
+   const file=localFiles.find(f=>f.id===activeFileId);
+   if(!file){activeFileId=null;return showToast('تعذر العثور على الملف الحالي','error');}
+   if(!uniqueSiblingName(name,file.parentId,file.id))return showToast('يوجد عنصر بنفس الاسم في نفس المكان','error');
+   file.name=name;file.code=code;
+ }else{
+   const parentId=currentFolderId??null;
+   if(!uniqueSiblingName(name,parentId,null))return showToast('يوجد عنصر بنفس الاسم هنا','error');
+   const f={id:uid('file'),kind:'file',name,code,parentId};
+   localFiles.push(f);
+   activeFileId=f.id;
+ }
+ persist();
+ runCurrentBtn.classList.toggle('hidden',!isRunnable({name}));
+ fileNameInput.value=name;
+ renderFilesList();
+ showToast('تم حفظ الملف بنجاح!','success');
+};
+function editFile(id){
+ const f=localFiles.find(x=>x.id===id);if(!f)return;
+ activeFileId=id;fileNameInput.value=f.name;fileCodeInput.value=f.code;updateCodeHighlight();runCurrentBtn.classList.toggle('hidden',!isRunnable(f));
+ window.scrollTo({top:0,behavior:'smooth'});showToast(`تم فتح ${f.name}`);
+}
+function isRunnable(file){return ['html','htm'].includes(extOf(file.name))}
+function confirmDeleteFile(id){
+ const f=localFiles.find(x=>x.id===id);if(!f)return;
+ showCustomModal('حذف الملف',`هل أنت متأكد من حذف الملف "${f.name}"؟`,'حذف',()=>{
+  localFiles=localFiles.filter(x=>x.id!==id);if(activeFileId===id){activeFileId=null;fileNameInput.value='';fileCodeInput.value='';updateCodeHighlight();runCurrentBtn.classList.add('hidden')}
+  persist();showToast('تم الحذف','success');
+ });
+}
+function folderHasChildren(id){return localFiles.some(f=>f.parentId===id)||folders.some(f=>f.parentId===id)}
+function confirmDeleteFolder(id){
+ const f=folders.find(x=>x.id===id);if(!f)return;
+ const count=folderHasChildren(id)?' الفولدر يحتوي على ملفات أو فولدرات وسيتم حذف محتوياته أيضًا.':'';
+ showCustomModal('حذف الفولدر',`هل أنت متأكد من حذف "${f.name}"؟${count}`,'حذف',()=>{
+  const ids=new Set([id]);let changed=true;
+  while(changed){changed=false;folders.forEach(x=>{if(x.parentId&&ids.has(x.parentId)&&!ids.has(x.id)){ids.add(x.id);changed=true}})}
+  folders=folders.filter(x=>!ids.has(x.id));localFiles=localFiles.filter(x=>!ids.has(x.parentId));
+  if(ids.has(currentFolderId))currentFolderId=f.parentId??null;
+  if(activeFileId&& !localFiles.some(x=>x.id===activeFileId)){activeFileId=null;fileNameInput.value='';fileCodeInput.value='';runCurrentBtn.classList.add('hidden')}
+  persist();showToast('تم حذف الفولدر ومحتوياته','success');
+ });
+}
+
+function launchProjectFile(id){const f=localFiles.find(x=>x.id===id);if(f)previewProject(f.id)}
+runCurrentBtn.onclick=()=>{if(activeFileId)previewProject(activeFileId);else showToast('احفظ ملف HTML أولاً','error')};
+
+function pathKeyForFile(file){return [...folderPath(file.parentId).map(f=>f.name),file.name].join('/')}
+function allProjectFiles(rootFile){
+ return localFiles.slice();
+}
+function normalizeRef(ref){try{return decodeURIComponent(ref).split(/[?#]/)[0]}catch(e){return ref.split(/[?#]/)[0]}}
+function dirname(path){const a=path.split('/');a.pop();return a.join('/')}
+function resolvePath(base,ref){
+ ref=normalizeRef(ref).trim();if(!ref||/^(data:|blob:|https?:|\/\/|mailto:|javascript:|#)/i.test(ref))return null;
+ let parts=(ref.startsWith('/')?[]:dirname(base).split('/')).concat(ref.split('/'));const out=[];
+ parts.forEach(x=>{if(!x||x==='.')return;if(x==='..')out.pop();else out.push(x)});return out.join('/');
+}
+function makeProjectMap(rootFile){
+ const files=allProjectFiles(rootFile),map=new Map();
+ files.forEach(f=>map.set(pathKeyForFile(f),f));
+ return {files,map};
+}
+function findProjectFile(map,path){
+ if(map.has(path))return map.get(path);
+ const clean=path.replace(/^\/+/,'');
+ if(map.has(clean))return map.get(clean);
+ return null;
+}
+function blobType(name){
+ const e=extOf(name);
+ return e==='html'||e==='htm'?'text/html;charset=utf-8':e==='css'?'text/css':e==='js'||e==='mjs'||e==='cjs'?'text/javascript':
+ e==='json'?'application/json':e==='svg'?'image/svg+xml':e==='txt'||e==='md'?'text/plain':e==='xml'?'application/xml':'application/octet-stream';
+}
+function rewriteCss(code,file,map,urls){
+ return code.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi,(m,q,ref)=>{
+   const target=findProjectFile(map,resolvePath(pathKeyForFile(file),ref)||'');if(!target)return m;
+   const u=URL.createObjectURL(new Blob([target.code],{type:blobType(target.name)}));urls.push(u);return `url(${q}${u}${q})`;
+ });
+}
+function rewriteHtml(code,file,map,urls){
+ const base=pathKeyForFile(file);
+ return code.replace(/(\b(?:src|href|action|poster|data)\s*=\s*)(["'])([^"']+)\2/gi,(m,p,q,ref)=>{
+   if(/^#|^(?:data:|blob:|https?:|\/\/|mailto:|javascript:)/i.test(ref))return m;
+   const target=findProjectFile(map,resolvePath(base,ref)||'');if(!target)return m;
+   const u=URL.createObjectURL(new Blob([target.code],{type:blobType(target.name)}));urls.push(u);return `${p}${q}${u}${q}`;
+ });
+}
+function previewProject(rootId){
+ const root=localFiles.find(x=>x.id===rootId);if(!root)return;
+ if(!['html','htm'].includes(extOf(root.name)))return showToast('المعاينة متاحة لملفات HTML فقط','error');
+ const {files,map}=makeProjectMap(root);
+ const project={};files.forEach(f=>{project[pathKeyForFile(f)]={name:f.name,code:f.code}});
+ const projectJson=JSON.stringify(project).replace(/</g,'\\u003c');
+ const startPath=pathKeyForFile(root);
+ const win=window.open('','_blank');if(!win)return showToast('المتصفح منع فتح نافذة المعاينة','error');
+ const boot=`<script>
+ window.__sandboxFiles=${projectJson};
+ window.__sandboxCurrentPath=${JSON.stringify(startPath)};
+ window.__sandboxResolve=function(base,ref){try{ref=decodeURIComponent(String(ref)).split(/[?#]/)[0]}catch(e){ref=String(ref).split(/[?#]/)[0]}if(!ref||/^(data:|blob:|https?:|\\/\\/|mailto:|javascript:|#)/i.test(ref))return null;var parts=(ref.startsWith('/')?[]:base.split('/').slice(0,-1)).concat(ref.split('/')),out=[];parts.forEach(function(x){if(!x||x==='.')return;if(x==='..')out.pop();else out.push(x)});return out.join('/')};
+ window.__sandboxBlobUrls=[];
+ window.__sandboxBlobType=function(name){var e=(name.split('.').pop()||'').toLowerCase();return e==='html'||e==='htm'?'text/html;charset=utf-8':e==='css'?'text/css':e==='js'||e==='mjs'||e==='cjs'?'text/javascript':e==='json'?'application/json':e==='svg'?'image/svg+xml':e==='txt'||e==='md'?'text/plain':e==='xml'?'application/xml':'application/octet-stream'};
+ window.__sandboxMakeBlob=function(code,type){var u=URL.createObjectURL(new Blob([code],{type:type}));window.__sandboxBlobUrls.push(u);return u};
+ window.__sandboxRewriteNav=function(code,path){return code.replace(/(?:window\\.)?location(?:\\.href)?\\s*=\\s*(["'])(.*?)\\1/g,function(m,q,ref){var dest=window.__sandboxResolve(path,ref);return dest?('window.__sandboxNavigate('+JSON.stringify(dest)+')'):m}).replace(/(?:window\\.)?location\\.(?:assign|replace)\\s*\\(\\s*(["'])(.*?)\\1\\s*\\)/g,function(m,q,ref){var dest=window.__sandboxResolve(path,ref);return dest?('window.__sandboxNavigate('+JSON.stringify(dest)+')'):m})};
+ window.__sandboxRender=function(path){var item=window.__sandboxFiles[path];if(!item){alert('الملف غير موجود في المشروع: '+path);return}if(!/\\.(html?|xhtml)$/i.test(item.name)){var u=window.__sandboxMakeBlob(item.code,window.__sandboxBlobType(item.name));window.open(u,'_blank');return}window.__sandboxCurrentPath=path;var html=item.code;if(!/<meta\s+[^>]*charset\s*=/i.test(html)){if(/<head\b[^>]*>/i.test(html))html=html.replace(/<head\b[^>]*>/i,function(h){return h+'<meta charset="utf-8">'});else html='<meta charset="utf-8">'+html;}var all=window.__sandboxFiles;
+ html=html.replace(/\\bonclick\\s*=\\s*(["'])(.*?)\\1/gi,function(m,q,code){var out=window.__sandboxRewriteNav(code,path);out=q==='"'?out.replace(/"/g,'&quot;'):out.replace(/'/g,'&#39;');return 'onclick='+q+out+q});
+ html=html.replace(/(<script\\b(?![^>]*\\bsrc\\s*=)[^>]*>)([\\s\\S]*?)(<\\/script\\s*>)/gi,function(m,a,code,z){return a+window.__sandboxRewriteNav(code,path)+z});
+ html=html.replace(/(\\b(?:src|href|action|poster|data)\\s*=\\s*)(["'])([^"']+)\\2/gi,function(m,p,q,ref){if(/^(#|data:|blob:|https?:|\\/\\/|mailto:|javascript:)/i.test(ref))return m;var dest=window.__sandboxResolve(path,ref);if(dest===null)return m;var target=all[dest];if(!target){if(/\\.(?:css|js|mjs|cjs|png|jpe?g|gif|svg|webp|html?|json)(?:$|[?#])/i.test(ref))return p+q+'#'+q+' data-sandbox-missing="'+ref.replace(/"/g,'&quot;')+'"';return m}var ext=(target.name.split('.').pop()||'').toLowerCase();if((p.toLowerCase().includes('href')||p.toLowerCase().includes('action'))&&/^(html?|xhtml)$/.test(ext))return 'href="#" data-sandbox-route="'+dest.replace(/"/g,'&quot;')+'"';var code=target.code;if(ext==='css')code=code.replace(/url\\(\\s*(["']?)([^"')]+)\\1\\s*\\)/gi,function(mm,qq,r){var d=window.__sandboxResolve(dest,r),t=d&&all[d];return t?('url('+qq+window.__sandboxMakeBlob(t.code,window.__sandboxBlobType(t.name))+qq+')'):mm});if(['js','mjs','cjs'].includes(ext))code=window.__sandboxRewriteNav(code,dest);return p+q+window.__sandboxMakeBlob(code,window.__sandboxBlobType(target.name))+q});
+ var router='<script>document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("[data-sandbox-route]");if(a){e.preventDefault();window.__sandboxNavigate(a.getAttribute("data-sandbox-route"));return}var m=e.target.closest&&e.target.closest("[data-sandbox-missing]");if(m){e.preventDefault();alert("الملف المرتبط غير موجود: "+m.getAttribute("data-sandbox-missing"))}});window.__sandboxNavigate=function(p){window.__sandboxRender(p)};'+String.fromCharCode(60)+'/script>';
+ if(/<head\\b[^>]*>/i.test(html))html=html.replace(/<head\\b[^>]*>/i,function(x){return x+router});else html=router+html;
+ document.open();document.write(html);document.close();};
+ window.__sandboxNavigate=function(path){window.__sandboxRender(path)};
+ window.__sandboxRender(window.__sandboxCurrentPath);
+ <\/script>`;
+ win.document.open();win.document.write(boot);win.document.close();
+ showToast(`تم تشغيل المشروع: ${root.name}`,'success');
+}
+
+async function ensureJSZip(){
+ if(window.JSZip)return window.JSZip;
+ if(zipLoadingPromise)return zipLoadingPromise;
+ zipLoadingPromise=new Promise((resolve,reject)=>{
+  const s=document.createElement('script');s.src='https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+  s.onload=()=>window.JSZip?resolve(window.JSZip):reject(new Error('JSZip unavailable'));
+  s.onerror=()=>reject(new Error('تعذر تحميل مكتبة ZIP'));
+  document.head.appendChild(s);
+ });
+ try{return await zipLoadingPromise}catch(e){zipLoadingPromise=null;throw e}
+}
+async function downloadFolderZip(id){
+ const folder=folders.find(x=>x.id===id);if(!folder)return;
+ try{
+  const JSZip=await ensureJSZip(),zip=new JSZip();
+  const rootPath=folderPath(id).map(f=>f.name).concat(folder.name).join('/');
+  const folderIds=new Set([id]);let changed=true;
+  while(changed){changed=false;folders.forEach(f=>{if(f.parentId&&folderIds.has(f.parentId)&&!folderIds.has(f.id)){folderIds.add(f.id);changed=true}})}
+  folders.filter(f=>folderIds.has(f.id)).forEach(f=>{
+    const rel=folderPath(f.parentId).filter(x=>folderIds.has(x.id)).map(x=>x.name).concat(f.name).join('/');
+    zip.folder(rel);
+  });
+  localFiles.filter(f=>folderIds.has(f.parentId)).forEach(f=>{
+    const rel=folderPath(f.parentId).filter(x=>folderIds.has(x.id)).map(x=>x.name).concat(f.name).join('/');
+    zip.file(rel,f.code);
+  });
+  const blob=await zip.generateAsync({type:'blob'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${folder.name}.zip`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast('تم تجهيز ZIP بنجاح','success');
+ }catch(e){showToast('تعذر إنشاء ZIP: تأكد من توفر الإنترنت لتحميل مكتبة ZIP','error')}
+}
+function downloadSingleFile(id){
+ const f=localFiles.find(x=>x.id===id);if(!f)return;
+ const blob=new Blob([f.code],{type:blobType(f.name)}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=f.name;a.click();
+ setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+document.getElementById('fileUploader').onchange=e=>{
+ const files=[...e.target.files];if(!files.length)return;
+ let pending=files.length;
+ files.forEach(file=>{
+  const reader=new FileReader();
+  reader.onload=ev=>{
+   let name=normalizeName(file.name)||('file_'+Date.now()+'.txt');
+   if(!uniqueSiblingName(name,currentFolderId,null)){const base=name.replace(/(\.[^.]+)$/,'');const ex=(name.match(/(\.[^.]+)$/)||['','.txt'])[1];let n=2;while(!uniqueSiblingName(`${base}_${n}${ex}`,currentFolderId,null))n++;name=`${base}_${n}${ex}`}
+   localFiles.push({id:uid('file'),kind:'file',name,code:String(ev.target.result??''),parentId:currentFolderId??null});
+   if(--pending===0){persist();showToast('تم رفع الملف/الملفات بنجاح!','success')}
+  };reader.readAsText(file);
+ });
+ e.target.value='';
+};
+function descendantFolderIds(rootId){
+ const ids=new Set([rootId]);let changed=true;
+ while(changed){changed=false;folders.forEach(f=>{if(f.parentId&&ids.has(f.parentId)&&!ids.has(f.id)){ids.add(f.id);changed=true}})}
+ return ids;
+}
+async function downloadAllFilesZip(){
+ if(!localFiles.length)return showToast('لا توجد ملفات لتحميلها','error');
+ try{
+  const JSZip=await ensureJSZip(),zip=new JSZip();
+  folders.forEach(f=>{const path=folderPath(f.id).map(x=>x.name).concat(f.name).join('/');if(path)zip.folder(path)});
+  localFiles.forEach(f=>{
+   const path=folderPath(f.parentId).map(x=>x.name).concat(f.name).filter(Boolean).join('/');
+   zip.file(path,f.code||'');
+  });
+  const blob=await zip.generateAsync({type:'blob'}),a=document.createElement('a'),url=URL.createObjectURL(blob);
+  a.href=url;a.download='sandbox_files.zip';document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('تم تحميل كل الملفات في ZIP بنجاح','success');
+ }catch(e){showToast('تعذر إنشاء ZIP: تأكد من توفر الإنترنت لتحميل مكتبة ZIP','error')}
+}
+
+function renderSiteInfo(){
+ const totalFiles=localFiles.length,totalFolders=folders.length;
+ const rootFiles=localFiles.filter(f=>(f.parentId??null)===null).length;
+ const nestedFiles=totalFiles-rootFiles;
+ const sizeBytes=localFiles.reduce((n,f)=>n+new Blob([f.code||'']).size,0);
+ const sizeLabel=sizeBytes<1024?`${sizeBytes} B`:sizeBytes<1024*1024?`${(sizeBytes/1024).toFixed(1)} KB`:`${(sizeBytes/1024/1024).toFixed(2)} MB`;
+ const folderRows=folders.length?folders.map(f=>{
+  const ids=descendantFolderIds(f.id);
+  const direct=localFiles.filter(x=>(x.parentId??null)===f.id).length;
+  const all=localFiles.filter(x=>ids.has(x.parentId)).length;
+  return `<div class="info-row"><span>${esc(f.name)}</span><strong>${direct} ملف مباشر · ${all} ملف إجمالي</strong></div>`;
+ }).join(''):'<div class="folder-empty">لا توجد فولدرات حالياً</div>';
+ document.getElementById('siteInfoContent').innerHTML=`
+  <div class="info-section"><h3><i class="fa-solid fa-chart-simple"></i> إحصائيات المحتوى</h3>
+   <div class="info-grid">
+    <div class="info-stat"><b>${totalFolders}</b><span>إجمالي الفولدرات</span></div>
+    <div class="info-stat"><b>${totalFiles}</b><span>إجمالي الملفات</span></div>
+    <div class="info-stat"><b>${rootFiles}</b><span>ملفات خارج الفولدرات</span></div>
+    <div class="info-stat"><b>${nestedFiles}</b><span>ملفات داخل فولدرات</span></div>
+    <div class="info-stat"><b>${sizeLabel}</b><span>الحجم التقريبي للكود</span></div>
+    <div class="info-stat"><b>${localFiles.filter(f=>['html','htm'].includes(extOf(f.name))).length}</b><span>ملفات HTML قابلة للمعاينة</span></div>
+   </div>
+  </div>
+  <div class="info-section"><h3><i class="fa-solid fa-folder-tree"></i> محتوى كل فولدر</h3><div class="info-list">${folderRows}</div></div>
+  <div class="info-section"><h3><i class="fa-solid fa-circle-info"></i> عن الموقع</h3>
+   <div class="info-list">
+    <div class="info-row"><span>نوع الموقع</span><strong>HTML Live Sandbox / محرر وتجربة مشاريع</strong></div>
+    <div class="info-row"><span>بيعمل إيه؟</span><strong>كتابة وحفظ وتنظيم ومعاينة ملفات ومشاريع الويب</strong></div>
+    <div class="info-row"><span>بيشتغل إزاي؟</span><strong>JavaScript يدير الملفات والفولدرات، والبيانات تُحفظ محلياً داخل المتصفح</strong></div>
+    <div class="info-row"><span>تخزين البيانات</span><strong>LocalStorage على نفس المتصفح والجهاز</strong></div>
+    <div class="info-row"><span>الربط بين الملفات</span><strong>مدعوم للمسارات المحلية مثل CSS وJS والصور والصفحات المرتبطة بالمشروع</strong></div>
+    <div class="info-row"><span>المعاينة</span><strong>HTML مع إعادة ربط الموارد المحلية داخل المشروع</strong></div>
+    <div class="info-row"><span>التشغيل</span><strong>ملفات HTML قابلة للتشغيل والمعاينة مباشرة</strong></div>
+    <div class="info-row"><span>التنزيل</span><strong>تنزيل الملفات، وتنزيل الفولدر كمشروع ZIP</strong></div>
+    <div class="info-row"><span>الرفع</span><strong>رفع ملفات متعددة من زر الرفع الموجود أعلى المحرر</strong></div>
+    <div class="info-row"><span>الأجهزة</span><strong>واجهة متجاوبة للموبايل والكمبيوتر</strong></div>
+    <div class="info-row"><span>إدارة المشاريع</span><strong>فولدرات متداخلة، نقل، إعادة تسمية، حذف، Breadcrumbs ومعاينة</strong></div>
+    <div class="info-row"><span>التخزين السحابي</span><strong>غير مدعوم؛ البيانات محلية على نفس المتصفح والجهاز</strong></div>
+   </div>
+  </div>
+  <div class="info-section" style="margin-bottom:0">
+   <button class="btn-primary" style="width:100%" onclick="downloadAllFilesZip()"><i class="fa-solid fa-file-zipper"></i> تحميل كل الملفات في ملف ZIP واحد</button>
+  </div>`;
+}
+document.getElementById('btnSiteInfo').onclick=()=>{renderSiteInfo();document.getElementById('siteInfoModal').classList.add('active')};
+document.getElementById('closeSiteInfoBtn').onclick=()=>document.getElementById('siteInfoModal').classList.remove('active');
+document.getElementById('siteInfoModal').addEventListener('click',e=>{if(e.target.id==='siteInfoModal')e.currentTarget.classList.remove('active')});
+
+document.getElementById('resetSandboxBtn').onclick=()=>{
+ showCustomModal('إعادة الضبط','تحذير: سيتم مسح جميع الملفات والفولدرات المخزنة محلياً!','تصفير',()=>{
+  localFiles=[];folders=[];currentFolderId=null;activeFileId=null;fileNameInput.value='';fileCodeInput.value='';updateCodeHighlight();runCurrentBtn.classList.add('hidden');persist();showToast('تم التصفير بنجاح','info');
+ });
+};
+renderFilesList();
+
+</script>
+<script>(function(){var source=document.getElementById("sandbox-app-source");if(!source)return;var runner=document.createElement("script");runner.textContent=source.textContent;document.body.appendChild(runner);source.remove();})();</script></body>
+</html>
